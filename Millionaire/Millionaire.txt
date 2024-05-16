@@ -1,0 +1,247 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Program
+{
+static List<Question> questions = new List<Question>()
+{
+new Question("What is the capital of the Philippines?", new string[]{"a. Manila", "b. Cebu", "c. Davao", "d. Quezon City"}, "a", 1000),
+new Question("What is the national language of the Philippines?", new string[]{"a. Filipino", "b. English", "c. Tagalog", "d. Visayan"}, "a", 5000),
+new Question("Who is the national hero of the Philippines?", new string[]{"a. Andres Bonifacio", "b. Jose Rizal", "c. Emilio Aguinaldo", "d. Manuel L. Quezon"}, "b", 10000),
+new Question("Which Filipino dish is made of pork marinated in a mixture of soy sauce, vinegar, garlic, brown sugar, and spices, then pan-fried until caramelized?", new string[]{"a. Adobo", "b. Sinigang", "c. Pancit", "d. Lechon"}, "a", 25000),
+new Question("What is the traditional Filipino dance performed at celebrations and festivals?", new string[]{"a. Tinikling", "b. Sakuting", "c. Singkil", "d. Pandanggo sa Ilaw"}, "a", 60000),
+new Question("Who is the author of the novel 'Noli Me Tangere'?", new string[]{"a. Emilio Jacinto", "b. Apolinario Mabini", "c. Jose Rizal", "d. Andres Bonifacio"}, "c", 90000),
+new Question("Which Philippine president declared Martial Law in 1972?", new string[]{"a. Ferdinand Marcos", "b. Cory Aquino", "c. Fidel Ramos", "d. Joseph Estrada"}, "a", 150000),
+new Question("What is the largest island in the Philippines by land area?", new string[]{"a. Luzon", "b. Mindanao", "c. Palawan", "d. Samar"}, "a", 300000),
+new Question("Which Philippine volcano erupted famously in 1991?", new string[]{"a. Mayon Volcano", "b. Mount Pinatubo", "c. Mount Taal", "d. Mount Bulusan"}, "b", 500000),
+new Question("Who was the first female president of the Philippines?", new string[]{"a. Gloria Macapagal-Arroyo", "b. Corazon Aquino", "c. Imelda Marcos", "d. Miriam Defensor-Santiago"}, "b", 1000000)
+};
+
+static int currentQuestionIndex = 0;
+static int prize = 0;
+static bool isGameOver = false;
+static bool fiftyFiftyUsed = false;
+static bool phoneAFriendUsed = false;
+static bool askTheAudienceUsed = false;
+
+static void Main(string[] args)
+{
+Console.WriteLine("Welcome to Who Wants to Be a Millionaire - Philippines Edition!");
+
+while (!isGameOver)
+{
+DisplayQuestion();
+string userAnswer = Console.ReadLine();
+
+if (userAnswer.Trim().ToLower() == "l")
+{
+UseLifeline();
+}
+else if (userAnswer.ToLower() == "quit")
+{
+Console.WriteLine($"You earned ₱{prize:N0}. Thanks for playing!");
+isGameOver = true;
+}
+else
+{
+CheckAnswer(userAnswer);
+}
+}
+}
+
+static void DisplayQuestion()
+{
+Console.WriteLine($"Question {currentQuestionIndex + 1}: {questions[currentQuestionIndex].QuestionText}");
+
+foreach (string option in questions[currentQuestionIndex].Options)
+{
+Console.WriteLine(option);
+}
+
+Console.Write("Your answer (Type L if need lifeline or type 'quit' to end the game): ");
+}
+
+static void UseLifeline()
+{
+List<int> availableLifelines = new List<int>();
+
+Console.WriteLine("Available lifelines:");
+
+if (!fiftyFiftyUsed)
+{
+Console.WriteLine("1. 50:50");
+availableLifelines.Add(1);
+}
+
+if (!phoneAFriendUsed)
+{
+Console.WriteLine("2. Phone a Friend");
+availableLifelines.Add(2);
+}
+
+if (!askTheAudienceUsed)
+{
+Console.WriteLine("3. Ask the Audience");
+availableLifelines.Add(3);
+}
+
+if (availableLifelines.Count == 0)
+{
+Console.WriteLine("No lifelines available. Please answer the question without using a lifeline.");
+return;
+}
+
+Console.Write("Enter lifeline number: ");
+
+int lifelineChoice;
+bool isValidChoice = int.TryParse(Console.ReadLine(), out lifelineChoice);
+
+if (!isValidChoice || !availableLifelines.Contains(lifelineChoice))
+{
+Console.WriteLine("Invalid lifeline choice. Please try again.");
+return;
+}
+
+switch (lifelineChoice)
+{
+case 1:
+if (!fiftyFiftyUsed)
+{
+FiftyFifty();
+fiftyFiftyUsed = true;
+}
+else
+{
+Console.WriteLine("50:50 lifeline already used.");
+}
+break;
+case 2:
+if (!phoneAFriendUsed)
+{
+PhoneAFriend();
+phoneAFriendUsed = true;
+}
+else
+{
+Console.WriteLine("Phone a Friend lifeline already used.");
+}
+break;
+case 3:
+if (!askTheAudienceUsed)
+{
+AskTheAudience();
+askTheAudienceUsed = true;
+}
+else
+{
+Console.WriteLine("Ask the Audience lifeline already used.");
+}
+break;
+}
+}
+
+static void CheckAnswer(string userAnswer)
+{
+if (userAnswer.Trim().ToLower() == questions[currentQuestionIndex].CorrectAnswer.ToLower())
+{
+Console.WriteLine("Correct!");
+prize = questions[currentQuestionIndex].Prize;
+currentQuestionIndex++;
+
+if (currentQuestionIndex >= questions.Count)
+{
+Console.WriteLine("Congratulations! You've won ₱1,000,000!");
+isGameOver = true;
+}
+else
+{
+Console.WriteLine($"Your prize: ₱{prize:N0}");
+Console.WriteLine();
+}
+}
+else
+{
+Console.WriteLine("Incorrect! Game Over.");
+Console.WriteLine($"You earned ₱{prize:N0}. Thanks for playing!");
+isGameOver = true;
+}
+}
+
+static void FiftyFifty()
+{
+List<string> options = new List<string>(questions[currentQuestionIndex].Options);
+int correctIndex = options.FindIndex(option => option.EndsWith(questions[currentQuestionIndex].CorrectAnswer));
+
+Random rnd = new Random();
+int index1, index2;
+do
+{
+index1 = rnd.Next(0, options.Count);
+} while (index1 == correctIndex);
+
+options.RemoveAt(index1);
+
+do
+{
+index2 = rnd.Next(0, options.Count);
+} while (index2 == correctIndex);
+
+options.RemoveAt(index2);
+
+Console.WriteLine($"The remaining options are:");
+
+foreach (string option in options)
+{
+Console.WriteLine(option);
+}
+}
+
+static void PhoneAFriend()
+{
+Console.WriteLine($"Your friend suggests the answer is: {questions[currentQuestionIndex].CorrectAnswer}");
+}
+
+static void AskTheAudience()
+{
+Random rnd = new Random();
+int correctIndex = Array.IndexOf(questions[currentQuestionIndex].Options, questions[currentQuestionIndex].CorrectAnswer);
+int[] audienceVotes = new int[questions[currentQuestionIndex].Options.Length];
+
+// Simulate audience votes
+for (int i = 0; i < audienceVotes.Length; i++)
+{
+if (i == correctIndex)
+{
+// Give higher probability for the correct answer
+audienceVotes[i] = rnd.Next(60, 101);
+}
+else
+{
+audienceVotes[i] = rnd.Next(1, 61);
+}
+}
+
+Console.WriteLine("Audience votes:");
+for (int i = 0; i < audienceVotes.Length; i++)
+{
+Console.WriteLine($"{questions[currentQuestionIndex].Options[i]}: {audienceVotes[i]}%");
+}
+}
+}
+
+class Question
+{
+public string QuestionText { get; }
+public string[] Options { get; }
+public string CorrectAnswer { get; }
+public int Prize { get; }
+
+public Question(string questionText, string[] options, string correctAnswer, int prize)
+{
+QuestionText = questionText;
+Options = options;
+CorrectAnswer = correctAnswer;
+Prize = prize;
+}
+}

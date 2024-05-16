@@ -1,0 +1,38 @@
+Start/Stop Nodes:
+
+Represented by start and stop.
+These nodes mark the beginning and end of the activity diagram.
+Output: A filled circle for start and a filled circle with a border for stop.
+Activities:
+
+Represented by :Activity Name;.
+These rectangles with rounded corners denote a specific action or process step.
+Example: :Initialize Game;, :Display Question;.
+Output: A rounded rectangle with the text inside.
+Decision Nodes:
+
+Represented by if (Condition) then (yes) ... else (no) ... endif.
+These diamonds represent decision points in the flow where the path splits based on a condition.
+Example: if (userAnswer == "l") then (yes) ... else (no).
+Output: A diamond shape with the condition text inside. The "yes" and "no" paths branch out from the diamond.
+Loops:
+
+Represented by while (Condition) ... endwhile.
+These structures indicate a loop that continues based on a condition.
+Example: while (!isGameOver) ... endwhile.
+Output: A loop structure where the flow returns to the starting point of the loop condition.
+Overall Output:
+Flow: The diagram visually represents the sequence of actions (activities) and decision points (conditions) in the game flow.
+Initialization: The game initializes and welcomes the player.
+Main Loop: Continuously displays questions and processes user inputs until the game is over.
+Lifeline Handling: Handles the use of lifelines if the user chooses to use one.
+Quit Handling: Ends the game if the user chooses to quit.
+Answer Checking: Validates the user's answer and updates the game state accordingly.
+Correct Answer: Updates prize and proceeds to the next question or ends the game if it was the last question.
+Incorrect Answer: Ends the game and displays the final prize.
+Visual Representation:
+The diagram starts at the start node.
+It proceeds through the initialization and welcome activities.
+Enters a loop where it displays questions, reads user input, and processes the input based on conditions.
+Uses decision nodes to handle different branches for lifelines, quitting, and checking answers.
+Ends at the stop node after the game concludes.
